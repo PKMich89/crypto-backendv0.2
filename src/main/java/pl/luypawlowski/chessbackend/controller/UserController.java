@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.luypawlowski.chessbackend.exception.UserExistsException;
 import pl.luypawlowski.chessbackend.model.NewEmailRequest;
 import pl.luypawlowski.chessbackend.model.NewLoginRequest;
 import pl.luypawlowski.chessbackend.model.NewPasswordRequest;
@@ -12,6 +13,7 @@ import pl.luypawlowski.chessbackend.service.UserService;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:3000/")
 @RestController
 @RequestMapping(value = "/users")
 public class UserController {
@@ -19,8 +21,13 @@ public class UserController {
     private UserService userService;
 
     @PostMapping
-    public Long saveUser(@RequestBody UserDto userDto) {
-        return userService.saveUser(userDto);
+    public ResponseEntity saveUser(@RequestBody UserDto userDto) {
+        try{
+            return ResponseEntity.ok(userService.saveUser(userDto));
+        } catch (UserExistsException e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        }
     }
 
     @GetMapping

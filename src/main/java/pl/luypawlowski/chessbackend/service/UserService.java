@@ -3,6 +3,7 @@ package pl.luypawlowski.chessbackend.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.luypawlowski.chessbackend.entities.User;
+import pl.luypawlowski.chessbackend.exception.UserExistsException;
 import pl.luypawlowski.chessbackend.model.UserDto;
 import pl.luypawlowski.chessbackend.repositories.UsersRepository;
 
@@ -16,6 +17,9 @@ public class UserService {
 
     public Long saveUser(UserDto userDto) {
         User user = userDto.toDomain();
+        if (usersRepository.existsByLogin(user.getLogin())) {
+            throw new UserExistsException("User " + user.getLogin() + " exist");
+        }
         User save = usersRepository.save(user);
 
         return save.getId();

@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Table(name = "users")
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,4 +23,13 @@ public class User {
     private String password;
     private String email;
 
+    private String activeToken;
+    private LocalDateTime validUtil;
+
+    public User(Long id, String login, String password, String email) {
+        this.id = id;
+        this.login = login;
+        this.password = password;
+        this.email = email;
+    }
 }

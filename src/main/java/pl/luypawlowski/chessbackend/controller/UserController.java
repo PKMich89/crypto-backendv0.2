@@ -37,12 +37,12 @@ public class UserController {
         }
     }
 
-    @GetMapping("/getAll")
+    @GetMapping("/get-all")
     public List<UserDto> getAllUsers() {
         return userService.getAllUsers();
     }
 
-    @PostMapping("/logIn")
+    @PostMapping("/log-in")
     public ResponseEntity logIn(@RequestBody UserLogInRequest userLogInRequest) {
         try {
             return ResponseEntity.ok(userService.logIn(userLogInRequest));
@@ -54,25 +54,40 @@ public class UserController {
 
     @DeleteMapping
     public void deleteUserByLogin(@RequestParam("login") String login, @RequestHeader("Authorization") String authorization) {
-        if (userService.findUserAuthorizationToken(authorization,login)){
+        if (userService.findUserAuthorizationToken(authorization, login)) {
             userService.deleteUserByLogin(login);
         } else {
-            throw new WrongCredentialsException("Wrong data!");
+            throw new WrongCredentialsException("No authorization!");
         }
     }
 
     @PutMapping("/{id}/new-password")
-    public UserDto editUserPassword(@RequestBody NewPasswordRequest newPasswordRequest, @PathVariable Long id) {
-        return userService.updateUserPassword(newPasswordRequest.getPassword(), id);
+    public UserDto editUserPassword(@RequestBody NewPasswordRequest newPasswordRequest, @PathVariable Long id,
+                                    @RequestHeader("Authorization") String authorization) {
+        if (userService.findUserAuthorizationTokenById(authorization, id)) {
+            return userService.updateUserPassword(newPasswordRequest.getPassword(), id);
+        } else {
+            throw new WrongCredentialsException("No authorization!");
+        }
     }
 
     @PutMapping("/{id}/new-login")
-    public UserDto editUserLogin(@RequestBody NewLoginRequest newLoginRequest, @PathVariable Long id) {
-        return userService.updateUserLogin(newLoginRequest.getLogin(), id);
+    public UserDto editUserLogin(@RequestBody NewLoginRequest newLoginRequest, @PathVariable Long id,
+                                 @RequestHeader("Authorization") String authorization) {
+        if (userService.findUserAuthorizationTokenById(authorization, id)) {
+            return userService.updateUserLogin(newLoginRequest.getLogin(), id);
+        } else {
+            throw new WrongCredentialsException("No authorization!");
+        }
     }
 
     @PutMapping("/{id}/new-email")
-    public UserDto editUserEmail(@RequestBody NewEmailRequest newEmailRequest, @PathVariable Long id) {
-        return userService.updateUserEmail(newEmailRequest.getEmail(), id);
+    public UserDto editUserEmail(@RequestBody NewEmailRequest newEmailRequest, @PathVariable Long id,
+                                 @RequestHeader("Authorization") String authorization) {
+        if (userService.findUserAuthorizationTokenById(authorization, id)) {
+            return userService.updateUserEmail(newEmailRequest.getEmail(), id);
+        } else {
+            throw new WrongCredentialsException("No authorization!");
+        }
     }
 }

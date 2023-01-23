@@ -1,7 +1,7 @@
 web:
   filter:
     cors:
-      allowedHeaders: Origin,Content-Type,Accept
+      allowedHeaders: Origin,Content-Type,Accept,Authorization
       allowedMethods: GET,POST,PUT,DELETE,ORIGIN
       allowedOrigins: 'http://localhost:3000/'
 

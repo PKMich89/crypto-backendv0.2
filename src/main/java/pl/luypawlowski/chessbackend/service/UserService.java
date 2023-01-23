@@ -12,7 +12,6 @@ import pl.luypawlowski.chessbackend.model.UserDto;
 import pl.luypawlowski.chessbackend.model.UserLogInRequest;
 import pl.luypawlowski.chessbackend.repositories.UsersRepository;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
@@ -24,6 +23,7 @@ public class UserService {
     private UsersRepository usersRepository;
     @Autowired
     PasswordEncoder passwordEncoder;
+
     @Transactional
     public Long saveUser(UserDto userDto) {
         User user = userDto.toDomain();
@@ -42,17 +42,17 @@ public class UserService {
     }
 
     @Transactional
-    public UserActiveToken logIn(UserLogInRequest userLogInRequest) {
+    public User logIn(UserLogInRequest userLogInRequest) {
         User user = findUserByLogin(userLogInRequest.getLogin());
 
-        if(passwordEncoder.matches(userLogInRequest.getPassword(), user.getPassword())){
+        if (passwordEncoder.matches(userLogInRequest.getPassword(), user.getPassword())) {
             String token = LocalDateTime.now() + user.getPassword() + user.getLogin() + new Random().nextLong();
-            LocalDateTime localDateTimePlusHour =  LocalDateTime.now().plusHours(1);
+            LocalDateTime localDateTimePlusHour = LocalDateTime.now().plusHours(1);
             user.setActiveToken(token);
             user.setValidUtil(localDateTimePlusHour);
-            return new UserActiveToken(token, localDateTimePlusHour);
-        }else {
-           throw new WrongCredentialsException("Wrong data!");
+            return user;
+        } else {
+            throw new WrongCredentialsException("Wrong data!");
         }
     }
 
@@ -86,13 +86,19 @@ public class UserService {
         return UserDto.fromDomain(user);
     }
 
-    private User findUserByLogin(String login){
-        return usersRepository.findByLogin(login).orElseThrow(()-> new WrongCredentialsException("Wrong data"));
+    private User findUserByLogin(String login) {
+        return usersRepository.findByLogin(login).orElseThrow(() -> new WrongCredentialsException("Wrong data"));
     }
 
-    public boolean findUserAuthorizationToken(String authorization , String login) {
-        User user = usersRepository.findByLogin(login).orElseThrow(()-> new WrongCredentialsException("Wrong data"));
-        Boolean tru =user.getActiveToken().equals(authorization);
+    public boolean findUserAuthorizationToken(String authorization, String login) {
+        User user = usersRepository.findByLogin(login).orElseThrow(() -> new WrongCredentialsException("Wrong data"));
+
+        return user.getActiveToken().equals(authorization) && user.getValidUtil().isBefore(LocalDateTime.now());
+    }
+
+    public boolean findUserAuthorizationTokenById(String authorization, Long id) {
+        User user = usersRepository.findById(id).orElseThrow(() -> new WrongCredentialsException("Wrong data"));
+
         return user.getActiveToken().equals(authorization) && user.getValidUtil().isBefore(LocalDateTime.now());
     }
 }

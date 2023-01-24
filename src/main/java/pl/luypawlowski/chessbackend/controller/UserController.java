@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.luypawlowski.chessbackend.exception.UserExistsException;
 import pl.luypawlowski.chessbackend.exception.WrongCredentialsException;
-import pl.luypawlowski.chessbackend.model.*;
+import pl.luypawlowski.chessbackend.model.user.*;
 import pl.luypawlowski.chessbackend.service.UserService;
 
 import java.util.List;

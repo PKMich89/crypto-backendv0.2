@@ -1,4 +1,4 @@
-package pl.luypawlowski.chessbackend.model;
+package pl.luypawlowski.chessbackend.model.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

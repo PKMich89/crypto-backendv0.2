@@ -7,9 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.luypawlowski.chessbackend.entities.User;
 import pl.luypawlowski.chessbackend.exception.UserExistsException;
 import pl.luypawlowski.chessbackend.exception.WrongCredentialsException;
-import pl.luypawlowski.chessbackend.model.UserActiveToken;
-import pl.luypawlowski.chessbackend.model.UserDto;
-import pl.luypawlowski.chessbackend.model.UserLogInRequest;
+import pl.luypawlowski.chessbackend.model.user.UserDto;
+import pl.luypawlowski.chessbackend.model.user.UserLogInRequest;
 import pl.luypawlowski.chessbackend.repositories.UsersRepository;
 
 import java.time.LocalDateTime;
@@ -93,7 +92,7 @@ public class UserService {
     public boolean findUserAuthorizationToken(String authorization, String login) {
         User user = usersRepository.findByLogin(login).orElseThrow(() -> new WrongCredentialsException("Wrong data"));
 
-        return user.getActiveToken().equals(authorization) && user.getValidUtil().isBefore(LocalDateTime.now());
+        return user.getActiveToken().equals(authorization) && user.getValidUtil().isAfter(LocalDateTime.now());
     }
 
     public boolean findUserAuthorizationTokenById(String authorization, Long id) {

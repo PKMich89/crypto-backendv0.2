@@ -28,6 +28,8 @@ public class User {
     private LocalDateTime validUtil;
     @OneToMany(mappedBy = "owner")
     private List<Transaction> transactions;
+    @OneToMany(mappedBy = "owner")
+    private List<CoinUser> coins;
 
     public User(Long id, String login, String password, String email) {
         this.id = id;
@@ -39,5 +41,10 @@ public class User {
     public void addTransaction(Transaction transaction) {
         this.transactions.add(transaction);
         transaction.setOwner(this);
+    }
+
+    public void addCoin(CoinUser coinUser) {
+        this.coins.add(coinUser);
+        coinUser.setOwner(this);
     }
 }

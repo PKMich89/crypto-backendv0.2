@@ -34,7 +34,7 @@ public class TransactionController {
     }
 
     @GetMapping("/all-transactions")
-    public List<Transaction> getAllUserTransactions(@RequestHeader("Authorization") String authorization) {
+    public List<TransactionDto> getAllUserTransactions(@RequestHeader("Authorization") String authorization) {
         User user = userService.findUserByAuthorizationToken(authorization);
 
         return transactionService.getAllUserTransactions(user);

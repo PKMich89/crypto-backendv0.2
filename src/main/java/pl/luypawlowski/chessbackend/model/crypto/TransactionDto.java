@@ -20,9 +20,9 @@ public class TransactionDto {
     private String coin;
     private Double amount;
     private Double value;
-    private UserDto owner;
+    private Long ownerId;
 
-    public TransactionDto(Long id, String type, String comment, LocalDate date, String coin, Double amount, Double value) {
+    public TransactionDto(Long id, String type, String comment, LocalDate date, String coin, Double amount, Double value, Long userId) {
         this.id = id;
         this.type = type;
         this.comment = comment;
@@ -30,6 +30,7 @@ public class TransactionDto {
         this.coin = coin;
         this.amount = amount;
         this.value = value;
+        this.ownerId = userId;
     }
 
     public Transaction toDomain() {
@@ -39,6 +40,6 @@ public class TransactionDto {
     public static TransactionDto fromDomain(Transaction transaction) {
         return new TransactionDto(transaction.getId(), transaction.getType(),
                 transaction.getComment(), transaction.getDate(), transaction.getCoin(),
-                transaction.getAmount(), transaction.getValue());
+                transaction.getAmount(), transaction.getValue(), transaction.getOwner().getId());
     }
 }

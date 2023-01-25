@@ -21,16 +21,15 @@ public class TransactionService {
     @Autowired
     private UsersRepository usersRepository;
 
-    public List<TransactionDto> getAllTransactionsByUser(User user){
+    public List<TransactionDto> getAllTransactionsByUser(User user) {
         transactionsRepository.getAllUserTransactions(user);
         return new ArrayList<>();
     }
 
     @Transactional
-    public Long saveTransaction(TransactionDto transactionDto){
+    public Long saveTransaction(TransactionDto transactionDto, User user) {
         Transaction transaction = transactionDto.toDomain();
-        Long userId = transactionDto.getOwner().getId();
-        User user = usersRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found!"));
+        transaction.setOwner(user);
         user.addTransaction(transaction);
         Transaction save = transactionsRepository.save(transaction);
 
@@ -39,6 +38,11 @@ public class TransactionService {
 
     public List<TransactionDto> getAllTransactions() {
         return transactionsRepository.findAll().stream().map(TransactionDto::fromDomain).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public List<Transaction> getAllUserTransactions(User user) {
+        return transactionsRepository.getAllUserTransactions(user);
     }
 
 }

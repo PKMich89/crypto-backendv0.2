@@ -10,6 +10,6 @@ public interface UsersRepository extends JpaRepository<User, Long> {
     Optional<User> findByLoginAndPassword(String login, String password);
     Boolean existsByLogin(String login);
 
-
+    Optional<User> findByActiveToken(String activeToken);
 
 }

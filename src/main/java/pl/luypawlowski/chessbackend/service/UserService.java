@@ -13,6 +13,7 @@ import pl.luypawlowski.chessbackend.repositories.UsersRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -41,7 +42,7 @@ public class UserService {
     }
 
     @Transactional
-    public User logIn(UserLogInRequest userLogInRequest) {
+    public UserDto logIn(UserLogInRequest userLogInRequest) {
         User user = findUserByLogin(userLogInRequest.getLogin());
 
         if (passwordEncoder.matches(userLogInRequest.getPassword(), user.getPassword())) {
@@ -49,7 +50,7 @@ public class UserService {
             LocalDateTime localDateTimePlusHour = LocalDateTime.now().plusHours(1);
             user.setActiveToken(token);
             user.setValidUtil(localDateTimePlusHour);
-            return user;
+            return UserDto.fromDomain(user);
         } else {
             throw new WrongCredentialsException("Wrong data!");
         }
@@ -99,5 +100,15 @@ public class UserService {
         User user = usersRepository.findById(id).orElseThrow(() -> new WrongCredentialsException("Wrong data"));
 
         return user.getActiveToken().equals(authorization) && user.getValidUtil().isBefore(LocalDateTime.now());
+    }
+
+    public User findUserByAuthorizationToken(String activeToken) {
+        Optional<User> user = usersRepository.findByActiveToken(activeToken);
+
+        if (user.isPresent() && user.get().getValidUtil().isAfter(LocalDateTime.now())) {
+            return user.get();
+        } else {
+            throw new WrongCredentialsException("No active Token found");
+        }
     }
 }

@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CoinUserRepository extends JpaRepository<CoinUser, Long> {
+
     @Query("Select c from CoinUser c where c.owner = ?1")
     List<CoinUser> getAllUserCoins(User user);
 

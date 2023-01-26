@@ -2,7 +2,6 @@ package pl.luypawlowski.chessbackend.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import pl.luypawlowski.chessbackend.entities.Transaction;
 import pl.luypawlowski.chessbackend.entities.User;
 import pl.luypawlowski.chessbackend.model.crypto.TransactionDto;
 import pl.luypawlowski.chessbackend.service.TransactionService;

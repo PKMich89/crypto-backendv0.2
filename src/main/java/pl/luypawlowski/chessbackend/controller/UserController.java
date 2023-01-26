@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.luypawlowski.chessbackend.entities.User;
 import pl.luypawlowski.chessbackend.exception.UserExistsException;
 import pl.luypawlowski.chessbackend.exception.WrongCredentialsException;
 import pl.luypawlowski.chessbackend.model.user.*;
@@ -61,33 +62,19 @@ public class UserController {
         }
     }
 
-    @PutMapping("/{id}/new-password")
-    public UserDto editUserPassword(@RequestBody NewPasswordRequest newPasswordRequest, @PathVariable Long id,
-                                    @RequestHeader("Authorization") String authorization) {
-        if (userService.findUserAuthorizationTokenById(authorization, id)) {
-            return userService.updateUserPassword(newPasswordRequest.getPassword(), id);
-        } else {
-            throw new WrongCredentialsException("No authorization!");
-        }
+    @PutMapping("/new-login")
+    public UserDto editUserLogin(@RequestBody NewLoginRequest newLoginRequest,
+                                 @RequestHeader("Authorization") String authorization) {
+        User user = userService.findUserByAuthorizationToken(authorization);
+
+        return userService.updateUserLogin(user, newLoginRequest.getLogin());
     }
 
-    @PutMapping("/{id}/new-login")
-    public UserDto editUserLogin(@RequestBody NewLoginRequest newLoginRequest, @PathVariable Long id,
+    @PutMapping("/new-email")
+    public UserDto editUserEmail(@RequestBody NewEmailRequest newEmailRequest,
                                  @RequestHeader("Authorization") String authorization) {
-        if (userService.findUserAuthorizationTokenById(authorization, id)) {
-            return userService.updateUserLogin(newLoginRequest.getLogin(), id);
-        } else {
-            throw new WrongCredentialsException("No authorization!");
-        }
-    }
+        User user = userService.findUserByAuthorizationToken(authorization);
 
-    @PutMapping("/{id}/new-email")
-    public UserDto editUserEmail(@RequestBody NewEmailRequest newEmailRequest, @PathVariable Long id,
-                                 @RequestHeader("Authorization") String authorization) {
-        if (userService.findUserAuthorizationTokenById(authorization, id)) {
-            return userService.updateUserEmail(newEmailRequest.getEmail(), id);
-        } else {
-            throw new WrongCredentialsException("No authorization!");
-        }
+        return userService.updateUserEmail(user, newEmailRequest.getEmail());
     }
 }

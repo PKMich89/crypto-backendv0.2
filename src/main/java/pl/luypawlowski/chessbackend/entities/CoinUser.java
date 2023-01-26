@@ -5,12 +5,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @Table(name = "coin_user")
 @Setter
 @Getter
 @Entity
+@NoArgsConstructor
 public class CoinUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,6 +17,7 @@ public class CoinUser {
     private String name;
     private Double value;
     private Double amount;
+
     @ManyToOne
     @JoinColumn(name = "owner_id")
     private User owner;

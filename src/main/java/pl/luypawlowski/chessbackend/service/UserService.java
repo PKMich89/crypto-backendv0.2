@@ -65,23 +65,16 @@ public class UserService {
         usersRepository.delete(user);
     }
 
-    public UserDto updateUserLogin(String newLogin, Long id) {
-        User user = usersRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found!"));
+    @Transactional
+    public UserDto updateUserLogin(User user,String newLogin) {
         user.setLogin(newLogin);
 
         return UserDto.fromDomain(user);
     }
 
-    public UserDto updateUserEmail(String newEmail, Long id) {
-        User user = usersRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found!"));
+    @Transactional
+    public UserDto updateUserEmail(User user,String newEmail) {
         user.setEmail(newEmail);
-
-        return UserDto.fromDomain(user);
-    }
-
-    public UserDto updateUserPassword(String newPassword, Long id) {
-        User user = usersRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found!"));
-        user.setPassword(newPassword);
 
         return UserDto.fromDomain(user);
     }

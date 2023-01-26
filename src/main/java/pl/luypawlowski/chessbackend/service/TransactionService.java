@@ -38,6 +38,7 @@ public class TransactionService {
         if (coinUserExisting.isEmpty()) {
             CoinUser coinUser = new CoinUser(transaction.getCoin(), transaction.getValue(), transaction.getAmount(), user);
             user.addCoin(coinUser);
+            coinUserRepository.save(coinUser);
         } else {
             coinUserExisting.get().setAmount(coinUserExisting.get().getAmount() + transaction.getAmount());
         }
@@ -56,5 +57,6 @@ public class TransactionService {
     public List<TransactionDto> getAllUserTransactions(User user) {
         return transactionsRepository.getAllUserTransactions(user).stream().map(TransactionDto::fromDomain).collect(Collectors.toList());
     }
+
 
 }

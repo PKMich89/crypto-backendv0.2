@@ -28,6 +28,7 @@ public class User {
     private LocalDateTime validUtil;
     @OneToMany(mappedBy = "owner")
     private List<Transaction> transactions;
+
     @OneToMany(mappedBy = "owner")
     private List<CoinUser> coins;
 

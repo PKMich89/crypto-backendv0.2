@@ -14,5 +14,6 @@ import lombok.Setter;
 public class CoinDto {
     private Long id;
     private String name;
-    private Long value;
+    private Double value;
+    private Double amount;
 }

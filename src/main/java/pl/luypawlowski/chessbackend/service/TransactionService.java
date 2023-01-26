@@ -36,7 +36,7 @@ public class TransactionService {
         transaction.setOwner(user);
         Optional<CoinUser> coinUserExisting = coinUserRepository.findByOwnerAndName(user, transaction.getCoin());
         if (coinUserExisting.isEmpty()) {
-            CoinUser coinUser = new CoinUser(transaction.getCoin(), transaction.getValue(), transaction.getAmount(), user);
+            CoinUser coinUser = new CoinUser(transaction.getCoin(), transaction.getPrice(), transaction.getAmount(), user);
             user.addCoin(coinUser);
             coinUserRepository.save(coinUser);
         } else {

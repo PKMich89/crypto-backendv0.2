@@ -10,6 +10,6 @@ import java.util.List;
 public interface TransactionsRepository extends JpaRepository<Transaction, Long> {
     @Query("Select t from Transaction t where t.owner = ?1")
     List<Transaction> getAllUserTransactions(User user);
-
-
+    @Query("Select t from Transaction t where t.owner = ?1 and t.coin = ?2")
+    List<Transaction> getAllUserTransactionsForCoin(User user, String coinName);
 }

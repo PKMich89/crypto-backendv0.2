@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.luypawlowski.chessbackend.model.coin.CoinUserDto;
+
 @Setter
 @Getter
 @AllArgsConstructor

@@ -33,7 +33,6 @@ public class WalletService {
     public WalletDto getUserWallet(User user) {
         List<CoinUserDto> userCoins = coinUserRepository.getAllUserCoins(user).stream().map(CoinUserDto::fromDomain).toList();
         userCoins.forEach(coinUserDto -> coinUserDto.setCurrentPrice(coinService.getPriceOfCoin(coinUserDto.getName())));
-
         WalletDto walletDto = WalletDto.of(user.getId(), userCoins);
         List<CoinInWallet> coinsInWallet = new ArrayList<CoinInWallet>();
         double investmentsValue = 0;
@@ -42,11 +41,13 @@ public class WalletService {
             double sum = allUserTransactionsOfCoin.stream().mapToDouble(transaction -> transaction.getAmount() * transaction.getPrice()).sum();
             investmentsValue += sum;
             double currentCryptoPrice = c.getCurrentPrice();
-            double curentPriceSum = allUserTransactionsOfCoin.stream().mapToDouble(transaction -> transaction.getAmount() * currentCryptoPrice).sum();
-            double returnTotal = sum - curentPriceSum;
-            double returnInPercent = (returnTotal * 100) / curentPriceSum;
-            double walletPrecent = (100 * curentPriceSum) / walletDto.getCurrentValue();
-            CoinInWallet coinInWallet = new CoinInWallet(returnInPercent, returnTotal, walletPrecent, c);
+            double currentPriceSum = allUserTransactionsOfCoin.stream().mapToDouble(transaction ->
+                    transaction.getAmount() * currentCryptoPrice).sum();
+            double returnTotal = sum - currentPriceSum;
+            double returnInPercent = (returnTotal * 100)/ currentPriceSum;
+            double walletPercent = (100 * currentPriceSum) / walletDto.getCurrentValue();
+
+            CoinInWallet coinInWallet = new CoinInWallet(returnInPercent, returnTotal, walletPercent, c);
             coinsInWallet.add(coinInWallet);
         }
         walletDto.setAllCoinsInWallet(coinsInWallet);

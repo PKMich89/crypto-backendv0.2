@@ -25,6 +25,7 @@ public class WalletDto {
         ).sum();
     }
 
+
     public static WalletDto of(Long userId, List<CoinUserDto> coinUsers) {
         return new WalletDto(userId, coinUsers);
     }

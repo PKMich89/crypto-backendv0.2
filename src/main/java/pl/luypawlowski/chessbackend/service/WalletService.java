@@ -8,6 +8,7 @@ import pl.luypawlowski.chessbackend.entities.Transaction;
 import pl.luypawlowski.chessbackend.entities.User;
 import pl.luypawlowski.chessbackend.model.coin.CoinUserDto;
 import pl.luypawlowski.chessbackend.model.crypto.TransactionDto;
+import pl.luypawlowski.chessbackend.model.wallet.CoinInWallet;
 import pl.luypawlowski.chessbackend.model.wallet.WalletDto;
 import pl.luypawlowski.chessbackend.repositories.CoinUserRepository;
 import pl.luypawlowski.chessbackend.repositories.TransactionsRepository;
@@ -33,14 +34,25 @@ public class WalletService {
         List<CoinUserDto> userCoins = coinUserRepository.getAllUserCoins(user).stream().map(CoinUserDto::fromDomain).toList();
         userCoins.forEach(coinUserDto -> coinUserDto.setCurrentPrice(coinService.getPriceOfCoin(coinUserDto.getName())));
 
+        WalletDto walletDto = WalletDto.of(user.getId(), userCoins);
+        List<CoinInWallet> coinsInWallet = new ArrayList<CoinInWallet>();
+        double investmentsValue = 0;
         for (CoinUserDto c : userCoins) {
             List<Transaction> allUserTransactionsOfCoin = transactionsRepository.getAllUserTransactionsForCoin(user, c.getName());
             double sum = allUserTransactionsOfCoin.stream().mapToDouble(transaction -> transaction.getAmount() * transaction.getPrice()).sum();
-            //todo uzupełnic jaki jest zwrot na danum coinie w % i ogólnie
+            investmentsValue += sum;
+            double currentCryptoPrice = c.getCurrentPrice();
+            double curentPriceSum = allUserTransactionsOfCoin.stream().mapToDouble(transaction -> transaction.getAmount() * currentCryptoPrice).sum();
+            double returnTotal = sum - curentPriceSum;
+            double returnInPercent = (returnTotal * 100) / curentPriceSum;
+            double walletPrecent = (100 * curentPriceSum) / walletDto.getCurrentValue();
+            CoinInWallet coinInWallet = new CoinInWallet(returnInPercent, returnTotal, walletPrecent, c);
+            coinsInWallet.add(coinInWallet);
         }
+        walletDto.setAllCoinsInWallet(coinsInWallet);
+        walletDto.setInvestmentsValue(investmentsValue);
 
-
-        return WalletDto.of(user.getId(), userCoins);
+        return walletDto;
     }
 
 }

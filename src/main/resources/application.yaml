@@ -13,9 +13,9 @@ spring:
       ddl-auto: update
   datasource:
     platform: postgres
-    url: jdbc:postgresql://localhost:5432/chess-db
-    username: user
-    password: admin
+    url: jdbc:postgresql://localhost:5432/cryptodb
+    username: postgres
+    password: 1021
     driverClassName: org.postgresql.Driver
   jackson:
     default-property-inclusion: non_null

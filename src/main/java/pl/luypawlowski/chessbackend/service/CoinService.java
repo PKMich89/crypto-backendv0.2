@@ -36,7 +36,7 @@ public class CoinService {
         getCurrentRate("ATOM");
         getCurrentRate("USDT");
     }
-
+//
     private void getCurrentRate(String currency) {
         ExchangeRateModel rate = client.get()
                 .uri("https://rest.coinapi.io/v1/exchangerate/"+currency+"/USD")
